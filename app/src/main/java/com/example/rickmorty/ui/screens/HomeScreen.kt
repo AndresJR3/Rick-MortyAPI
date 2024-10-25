@@ -54,7 +54,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
             // la llamada a la API
             try{
                 isLoading = true
-                val BASE_URL = "https://rick&morty.com/"
+                val BASE_URL = "https://rickandmortyapi.com/"
                 val characterService  = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
