@@ -29,12 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.rickmorty.models.Character
 import com.example.rickmorty.services.CharacterService
+import com.example.rickmorty.ui.theme.RickMortyTheme
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -48,23 +50,22 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
     var isLoading by remember {
         mutableStateOf(false)
     }
-
     LaunchedEffect(key1 = true) {
         scope.launch {
-            // la llamada a la API
-            try{
-                isLoading = true
-                val BASE_URL = "https://rickandmortyapi.com/"
-                val characterService  = Retrofit.Builder()
+            try {
+                val BASE_URL = "https://rickandmortyapi.com/api/"
+                val characterService = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(CharacterService::class.java)
-                characters = characterService.getCharacters()
+
+                val response = characterService.getCharacters() //OBTENEMOS LA LISTA ApiResponse
+                characters = response.results //OBTENEMOS LA LISTA DE PERSONAJES
                 Log.i("HomeScreenResponse", characters.toString())
-                isLoading = false //mostrar algo mientras cargan los productos
+                isLoading = false
             }
-            catch (e:Exception){
+            catch (e: Exception){
                 characters = listOf()
                 isLoading = false
             }
@@ -72,7 +73,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
         }
     }
 
-    if (isLoading){
+    if(isLoading){
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -85,33 +86,36 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
     else{
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+            modifier = Modifier.padding(8.dp)
         ) {
-            items(characters){
-                Card (
+            items(characters) { character ->
+                Card(
                     modifier = Modifier
+                        .padding(8.dp)
                         .fillMaxWidth()
-                        .background(Color.White)
-                        .height(200.dp)
-                        .padding(5.dp)
-                        .clickable {
-                            navController.navigate("detail/${it.id}")
-                        }
-                ){
+                        .clickable { navController.navigate("detail/${character.id}") }
+                ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
                     ) {
                         AsyncImage(
-                            model = it.image,
-                            contentDescription = it.name,
-                            modifier = Modifier.fillMaxWidth().weight(3f),
+                            model = character.image,
+                            contentDescription = character.name,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp),
                             contentScale = ContentScale.Crop
                         )
                         Text(
-                            text = it.computedName,
-                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            text = character.name,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        Text(
+                            text = "Status: ${character.status}",
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -119,3 +123,4 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
         }
     }
 }
+
