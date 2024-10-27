@@ -10,7 +10,7 @@ interface CharacterService {
     @GET("character")
     suspend fun getCharacters(): ApiResponse
 
-    @GET("characters/{id}")
+    @GET("character/{id}")
     suspend fun getCharactersById(@Path("id") id: Int):Character
 
 }

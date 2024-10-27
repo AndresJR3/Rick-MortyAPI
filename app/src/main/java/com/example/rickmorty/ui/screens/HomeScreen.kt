@@ -3,9 +3,13 @@ package com.example.rickmorty.ui.screens
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -74,6 +78,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
     }
 
     if(isLoading){
+
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -84,39 +89,64 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController){
         }
     }
     else{
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(8.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            items(characters) { character ->
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .clickable { navController.navigate("detail/${character.id}") }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 30.dp),
+                    text = "Rick & Morty",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+            ) {
+                items(characters) {
+                    Card(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .background(Color.White)
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("detail/${it.id}")
+                            }
                     ) {
-                        AsyncImage(
-                            model = character.image,
-                            contentDescription = character.name,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        Text(
-                            text = character.name,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                        Text(
-                            text = "Status: ${character.status}",
-                            fontSize = 14.sp
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            AsyncImage(
+                                model = it.image,
+                                contentDescription = it.name,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(150.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            Text(
+                                text = it.computedName,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                            Text(
+                                text = "Especie: ${it.species}",
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 }
             }

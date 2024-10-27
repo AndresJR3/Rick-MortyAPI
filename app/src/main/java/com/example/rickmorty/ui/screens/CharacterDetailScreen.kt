@@ -1,11 +1,16 @@
 package com.example.rickmorty.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +22,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +62,7 @@ fun CharacterDetailScreen(id:Int,innerPaddingValues: PaddingValues){
         ))
     }
 
-    val BASE_URL = "https://rickandmortyapi.com/api/character/"
+    val BASE_URL = "https://rickandmortyapi.com/api/"
     val productService = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -89,18 +96,80 @@ fun CharacterDetailScreen(id:Int,innerPaddingValues: PaddingValues){
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            AsyncImage(
-                model = character.image,
-                contentDescription = character.name,
+            Spacer(modifier = Modifier.height(24.dp))
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-            Text(text = "Name: ${character.name}", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Gender: ${character.gender}", fontSize = 18.sp, color = Color.Gray)
-            Text(text = "Status: ${character.status}", fontSize = 18.sp, color = Color.Gray)
-            Text(text = "Species: ${character.species}", fontSize = 18.sp, color = Color.Gray)
-            Text(text = "Created: ${character.created}", fontSize = 14.sp, color = Color.LightGray)
+                    .height(250.dp)
+                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+            ) {
+                AsyncImage(
+                    model = character.image,
+                    contentDescription = character.name,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Tarjeta de información con borde redondeado
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                shape = RoundedCornerShape(16.dp),
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = character.name,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Blue
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Gender: ${character.gender}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Status: ${character.status}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Species: ${character.species}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Location: ${character.location.name}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Created: ${character.created}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }
